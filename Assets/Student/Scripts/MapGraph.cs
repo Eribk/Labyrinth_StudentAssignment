@@ -1,36 +1,52 @@
 using NUnit.Framework;
+using Unity.Properties;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections.Generic;
+
+using Unity.VisualScripting;
 
 public class MapGraph
 {
     public MapData mapData;
     public int[] vertices;
-    public Edge[] edges;
+    private List<int>[] adj;
+    private int e;
 
     public MapGraph(MapData mapData)
     {
         this.mapData = mapData;
         vertices = new int[mapData.width*mapData.height];
-        edges= new Edge[(mapData.width-1)*mapData.height + (mapData.height-1)*mapData.width];
+        for(int i=0; i<vertices.Length; i++)
+        {
+            adj[i] = new List<int>();
+        }
         addVertices(mapData);
         addEdges(mapData);
+        e = 0;
     }
 
-    int V()
+    public int V()
     {
         return vertices.Length;
     }
 
-    int E()
+    public int E()
     {
-        return edges.Length;
+        return e;
     }
 
-    private void addEdge(int v1, int v2,int index)
+    public List<int> getAdj(int v)
     {
-        Edge edge = new Edge(v1, v2);
-        edges[index] = edge;
+        return adj[v];
+    }
+
+    private void addEdge(int v1, int v2)
+    {
+        adj[v1].Add(v2);
+        adj[v2].Add(v1);
+        e++;
+
     }
 
     private void addVertices(MapData mapData)
@@ -46,7 +62,6 @@ public class MapGraph
 
     private void addEdges(MapData mapData)
     {
-        int currentIndex = 0;
 
         for (int i = 0; i < vertices.Length; i++)
         {
@@ -69,8 +84,8 @@ public class MapGraph
             {
                 int v1 = i;
                 int v2 = i + 1;
-                addEdge(v1, v2, currentIndex);
-                currentIndex++;
+                addEdge(v1, v2);
+
             }
 
             for(int j = 0; j < mapData.hwalls.Length; j++)
@@ -87,8 +102,7 @@ public class MapGraph
             {
                 int v1 = i;
                 int v2 = i + mapData.width;
-                addEdge(v1, v2, currentIndex);
-                currentIndex++;
+                addEdge(v1, v2);
             }
 
         }
@@ -98,14 +112,4 @@ public class MapGraph
 
 
 
-public class Edge
-{
-    public int vertex1;
-    public int vertex2;
 
-    public Edge(int v1, int v2)
-    {
-        vertex1 = v1;
-        vertex2 = v2;
-    }
-}

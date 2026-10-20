@@ -9,6 +9,16 @@ public static class PathfindingAlgorithm
     {
         // Most of your solution should be implemented in this method.
 
+        MapGraph graph = new MapGraph(mapData);
+
+        List<int> openNodes = new List<int>();
+        List<int>closedNodes = new List<int>();
+
+        for (int i = 0; i < graph.vertices.Length; i++)
+        {
+
+        }
+
         Debug.LogWarning("FindShortestPath is not implemented.");
         return null;
     }
