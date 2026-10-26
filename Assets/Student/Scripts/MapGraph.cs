@@ -8,15 +8,15 @@ using Unity.VisualScripting;
 
 public class MapGraph
 {
-    public MapData mapData;
+    public IMapData mapData;
     public int[] vertices;
     private List<int>[] adj;
     private int e;
 
-    public MapGraph(MapData mapData)
+    public MapGraph(IMapData mapData)
     {
         this.mapData = mapData;
-        vertices = new int[mapData.width*mapData.height];
+        vertices = new int[mapData.Width*mapData.Height];
         for(int i=0; i<vertices.Length; i++)
         {
             adj[i] = new List<int>();
@@ -49,38 +49,38 @@ public class MapGraph
 
     }
 
-    private void addVertices(MapData mapData)
+    private void addVertices(IMapData mapData)
     {
-        for (int i = 0; i < mapData.height; i++)
+        for (int i = 0; i < mapData.Height; i++)
         {
-            for (int j = 0; j < mapData.width; j++)
+            for (int j = 0; j < mapData.Width; j++)
             {
-                vertices[i * mapData.width + j] = i * mapData.width + j;
+                vertices[i * mapData.Width + j] = i * mapData.Width + j;
             }
         }
     }
 
-    private void addEdges(MapData mapData)
+    private void addEdges(IMapData mapData)
     {
 
         for (int i = 0; i < vertices.Length; i++)
         {
-            bool vWallExists = false;
-            bool hWallExists = false;
-            int currentX = i % mapData.width;
-            int currentY = i / mapData.width;
-            for (int j = 0; j < mapData.vwalls.Length; j++)
-            {
+            //bool vWallExists = false;
+            //bool hWallExists = false;
+            int currentX = i % mapData.Width;
+            int currentY = i / mapData.Width;
+            //for (int j = 0; j < mapData.vwalls.Length; j++)
+            //{
                 
-                Wall wall = mapData.vwalls[j];
-                if (wall.x == currentX && wall.y == currentY)
-                {
-                    vWallExists = true;
-                    break;
-                }
-            }
+            //    Wall wall = mapData.vwalls[j];
+            //    if (wall.x == currentX && wall.y == currentY)
+            //    {
+            //        vWallExists = true;
+            //        break;
+            //    }
+            //}
 
-            if (!vWallExists&&i+1<vertices.Length)
+            if (i+1<vertices.Length)
             {
                 int v1 = i;
                 int v2 = i + 1;
@@ -88,20 +88,20 @@ public class MapGraph
 
             }
 
-            for(int j = 0; j < mapData.hwalls.Length; j++)
-            {
-                Wall wall = mapData.hwalls[j];
-                if (wall.x == currentX && wall.y == currentY)
-                {
-                    hWallExists = true;
-                    break;
-                }
-            }
+            //for(int j = 0; j < mapData.hwalls.Length; j++)
+            //{
+            //    Wall wall = mapData.hwalls[j];
+            //    if (wall.x == currentX && wall.y == currentY)
+            //    {
+            //        hWallExists = true;
+            //        break;
+            //    }
+            //}
 
-            if(!hWallExists&&i+mapData.width<vertices.Length)
+            if(i+mapData.Width<vertices.Length)
             {
                 int v1 = i;
-                int v2 = i + mapData.width;
+                int v2 = i + mapData.Width;
                 addEdge(v1, v2);
             }
 

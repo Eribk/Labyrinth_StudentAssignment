@@ -11,17 +11,10 @@ public static class PathfindingAlgorithm
 
         MapGraph graph = new MapGraph(mapData);
 
-        List<int> openNodes = new List<int>();
-        List<int>closedNodes = new List<int>();
-
-        for (int i = 0; i < graph.vertices.Length; i++)
-        {
-
-        }
-
         Debug.LogWarning("FindShortestPath is not implemented.");
         return null;
     }
+
 
     public static bool IsMovementBlocked(Vector2Int from, Vector2Int to, IMapData mapData)
     {
