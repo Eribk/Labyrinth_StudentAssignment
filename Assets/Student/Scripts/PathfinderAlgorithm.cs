@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,10 +10,27 @@ public static class PathfindingAlgorithm
     {
         // Most of your solution should be implemented in this method.
 
-        MapGraph graph = new MapGraph(mapData);
+        if(mapData == null)
+        {
+            Debug.Log("mapdata is null");
+        }
 
-        Debug.LogWarning("FindShortestPath is not implemented.");
-        return null;
+        Debug.Log("Get goal pos: " + goal);
+
+        MapGraph graph = new MapGraph(mapData);
+        int startNode = graph.ConvertPosToNode(start);
+        int endNode = graph.ConvertPosToNode(goal);
+        Debug.Log("Get goal ´node: " + endNode);
+
+
+        Dijktras D = new Dijktras(graph,startNode);
+
+        List<Vector2Int> path = D.getShortestPathTo(endNode);
+
+        //Debug.LogWarning("FindShortestPath is not implemented.");
+        //return null;
+
+        return path; 
     }
 
 

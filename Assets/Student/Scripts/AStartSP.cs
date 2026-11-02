@@ -4,18 +4,21 @@ using UnityEngine;
 
 public class AStartSP
 {
-    private static List<Vector2Int> AStartAlgoritm(MapGraph graph, int s)
+    private static List<Vector2Int> AStartAlgoritm(MapGraph graph, int s, int g)
     {
         List<Vector2Int> shortestPath = new List<Vector2Int>();
 
-        List<int> openNodes = new List<int>();
+        PriorityQueueMin<double,int> openNodes = new PriorityQueueMin<double,int>();
         List<int> closedNodes = new List<int>();
+
+        //DistanceModel model = new DistanceModel(g);
+
+        openNodes.AddKey(0,s);
 
         
 
-        while (openNodes.Count != 0)
+        while (openNodes.Size() != 0)
         {
-            int v;
         }
         
 

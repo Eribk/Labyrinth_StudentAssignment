@@ -76,6 +76,7 @@ public class GridCharacterMovement : MonoBehaviour
         }
 
         Vector2Int nextPosition = currentPath[pathIndex];
+        Debug.Log("Next position: " + nextPosition);
         if (TryMove(nextPosition.x, nextPosition.y)) pathIndex++;
         else
         {

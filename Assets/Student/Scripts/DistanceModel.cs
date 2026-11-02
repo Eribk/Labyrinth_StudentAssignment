@@ -1,15 +1,18 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DistanceModel
 {
-    public DistanceModel()
+    private Vector2Int goalPosition;
+    public DistanceModel(Vector2Int goalNode)
     {
+        goalPosition = goalNode;
 
     }
 
-    public double distanceEstimate()
+    public double distanceEstimate(Vector2Int v)
     {
-        double distance = double.PositiveInfinity;
+        double distance = Mathf.Abs(goalPosition.x - v.x) + Mathf.Abs(goalPosition.y - v.y);
 
         return distance;
 
