@@ -30,21 +30,26 @@ public class MapGraph
         addEdges(mapData);
     }
 
+    //Returns the number of vertices in the graph. 
     public int V()
     {
         return vertices.Length;
     }
 
+    //Returns the nnumber of edges in the graph.
     public int E()
     {
         return e;
     }
 
+    //Returns a list of edges adjacent to a specific vertex. 
     public List<DirectedEdge> getAdj(int v)
     {
         return adj[v];
     }
 
+
+    //Creates a directed edge and adds them to edges.
     private void addDirectedEdge(int from, int to, float weight)
     {
         DirectedEdge edge = new DirectedEdge(from, to, weight);
@@ -53,6 +58,7 @@ public class MapGraph
         e++;
     }
 
+    //Creates and adds all vertices to the graph. 
     private void addVertices(IMapData mapData)
     {
         for (int i = 0; i < mapData.Height; i++)
@@ -64,16 +70,18 @@ public class MapGraph
         }
     }
 
+    //Creates all of the eddges for the graph. 
     private void addEdges(IMapData mapData)
     {
 
+        //Goes through every vertex in the graph. 
         for (int i = 0; i < vertices.Length; i++)
         {
-            //bool vWallExists = false;
-            //bool hWallExists = false;
+            //Gets the x and y positions for the current vertex. 
             int currentX = i % mapData.Width;
             int currentY = i / mapData.Width;
 
+            //Checks if there are any jomps from that vertex, and if so, adds them to the edges- 
             if(mapData.HasJumpFrom(currentX, currentY))
             {
                 List<JumpConnection> jumps = mapData.GetJumpsFrom(new Vector2Int(currentX, currentY));
@@ -87,17 +95,8 @@ public class MapGraph
                 }
             }
 
-            //for (int j = 0; j < mapData.vwalls.Length; j++)
-            //{
 
-            //    Wall wall = mapData.vwalls[j];
-            //    if (wall.x == currentX && wall.y == currentY)
-            //    {
-            //        vWallExists = true;
-            //        break;
-            //    }
-            //}
-
+            //Adds and gets the cost for the horisontal edges in the graph.
             if (i + 1 < vertices.Length && currentX != mapData.Width - 1)
             {
                 int v1 = i;
@@ -105,22 +104,12 @@ public class MapGraph
                 Vector2Int from = new Vector2Int(currentX, currentY);
                 Vector2Int to = new Vector2Int(v2%mapData.Width, v2/mapData.Width);
                 float weigth = GetMovementCost(from,to);
-                //Debug.Log("Weight: " + weigth);
                 addDirectedEdge(v1, v2, weigth);
                 addDirectedEdge(v2, v1, weigth);
 
             }
 
-            ////for (int j = 0; j < mapData.hwalls.Length; j++)
-            ////{
-            ////    Wall wall = mapData.hwalls[j];
-            ////    if (wall.x == currentX && wall.y == currentY)
-            ////    {
-            ////        hWallExists = true;
-            ////        break;
-            ////    }
-            ////}
-
+            //Adds and gets the cost for the vertical edges in the graph.
             if (i + mapData.Width < vertices.Length)
             {
                 int v1 = i;
@@ -134,64 +123,9 @@ public class MapGraph
 
         }
 
-
-        //    for(int x=0; x<mapData.Width; x++)
-        //    {
-        //        for(int y=0; y<mapData.Height; y++)
-        //        {
-        //            //bool vWallExists = false;
-        //            //bool hWallExists = false;
-        //            int currentX = x;
-        //            int currentY = y;
-        //            int i = y * mapData.Width + x;
-        //            //for (int j = 0; j < mapData.vwalls.Length; j++)
-        //            //{
-
-        //            //    Wall wall = mapData.vwalls[j];
-        //            //    if (wall.x == currentX && wall.y == currentY)
-        //            //    {
-        //            //        vWallExists = true;
-        //            //        break;
-        //            //    }
-        //            //}
-
-
-
-        //            if (i + 1 < vertices.Length && currentX != mapData.Width - 1)
-        //            {
-        //                int v1 = i;
-        //                int v2 = i + 1;
-        //                float weigth = mapData.GetVerticalWallCost(currentX, currentY);
-        //                //Debug.Log("Weight: " + weigth);
-        //                addDirectedEdge(v1, v2, weigth);
-        //                addDirectedEdge(v2, v1, weigth);
-
-        //            }
-
-        //            //for (int j = 0; j < mapData.hwalls.Length; j++)
-        //            //{
-        //            //    Wall wall = mapData.hwalls[j];
-        //            //    if (wall.x == currentX && wall.y == currentY)
-        //            //    {
-        //            //        hWallExists = true;
-        //            //        break;
-        //            //    }
-        //            //}
-
-        //            if (i + mapData.Width < vertices.Length)
-        //            {
-        //                int v1 = i;
-        //                int v2 = i + mapData.Width;
-        //                float weight = mapData.GetHorizontalWallCost(currentX, currentY);
-        //                Debug.Log("Weight: " + weight);
-        //                addDirectedEdge(v1, v2, weight);
-        //                addDirectedEdge(v2, v1, weight);
-        //            }
-
-        //        }
-        //    }
     }
 
+    // Translates a node in the graph into a Vector2Int position. 
     public Vector2Int ConvertNodeToPos(int v)
     {
         int x=v%mapData.Width;
@@ -201,12 +135,19 @@ public class MapGraph
         return pos;
     }
 
+    // Translates a Vector2Int position into a node in the graph. 
     public int ConvertPosToNode(Vector2Int pos)
     {
         int node = (mapData.Width * pos.y)+pos.x;
+        if (node < 0 || node >= vertices.Length)
+        {
+            throw new System.ArgumentOutOfRangeException($"Position {pos} is out of bounds for the map dimensions.");
+        }
         return node;
     }
 
+
+    //Borrowed methods from the PathfinderManager class to calculate movement costs between two positions on the map.
     private float GetMovementCost(Vector2Int from, Vector2Int to)
     {
         if (mapData.TryGetJumpCost(from, to, out float jumpCost))
@@ -236,6 +177,7 @@ public class MapGraph
 
 
 
+// A class repressenting a directed edge. 
 public class DirectedEdge
 {
     public int v;

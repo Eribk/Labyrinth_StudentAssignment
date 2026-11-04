@@ -5,30 +5,29 @@ using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Value:IComparable<Value>
+public class PriorityQueueMin<Tkey> where Tkey:IComparable<Tkey> 
 {
     private Tkey[] keys;
-    private Value[] values;
-
+    private int[] vertices;
+    private bool[] visited;
     private int keyCount;
-    public PriorityQueueMin()
+    public PriorityQueueMin(int maxSize)
     {
         keyCount = 0;
         keys = new Tkey[4];
-        values = new Value[4];
+        vertices = new int[4];
+        visited = new bool[maxSize];
     }
 
 
-    public Value Min()
+    public int Min()
     {
-        return values[1];
+        return vertices[1];
     }
 
-    public Value delMin()
+    public int delMin()
     {
-        Value val = values[1];
-        //Debug.Log("Delete min");
-        //Debug.Log("Min value"+ val);
+        int val = vertices[1];
         Exchange(1, keyCount--);
         Sink(1);
         Rezise();
@@ -52,20 +51,16 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
         return keyCount;
     }
 
-    public void AddKey(Tkey key, Value value)
+    public void AddKey(Tkey key, int value)
     {
 
         keyCount++;
-        //Debug.Log("Keys length: " + keys.Length);
-        //Debug.Log("Number of keys: " + keyCount);
-        //Debug.Log("Value: " + value);
+
         keys[keyCount] = key;
-        values[keyCount] = value;
-        //Debug.Log("Min value in queue: " + values[keyCount]);
+        vertices[keyCount] = value;
         Swim(keyCount);
-        //Debug.Log("Min value after swim: " + values[keyCount]);
+        visited[value] = true;
         Rezise();
-        //Debug.Log("Min value after rezise: " + values[keyCount]);
 
 
     }
@@ -82,6 +77,7 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
         }
     }
 
+    //The sink method takes a specific index, comparest the key value to the smallest child key, and if the current index key is larger, swap places with it. 
     private void Sink(int i)
     {
         while (2*i<=keyCount)
@@ -92,30 +88,17 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
 
             if (less(i, j))
                  break;
-            //Debug.Log("Sink");
             Exchange(j, i);
             i = j;
 
         }
     }
 
-    public bool Contains(Value val)
+    //Checks if a specific value is in the priority queue. 
+    public bool Visited(int val)
     {
-        bool contains = false;
-        for(int i = 1; i < keyCount+1; i++)
-        {
-            if(values[i] == null)
-            {
-                continue;
-            }
-            if (values[i].CompareTo(val)==0)
-            {
-                contains=true; 
-                break;
-            }
-        }
-
-        return contains;
+        
+        return visited[val];
     }
 
     private bool less(int i, int j)
@@ -126,22 +109,22 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
     private void Exchange(int i, int j)
     {
         Tkey k = keys[i];
-        Value v = values[i];
+        int v = vertices[i];
 
         keys[i] = keys[j];
-        values[i] = values[j];
+        vertices[i] = vertices[j];
 
         keys[j]= k;
-        values[j] = v;
+        vertices[j] = v;
        
     }
-    private int GetIndex(Tkey key, Value val)
+    private int GetIndex(Tkey key, int val)
     {
 
         int index = 1;
         for(int i=1; i<=keyCount; i++)
         {
-            if (values[i].CompareTo(val) == 0)
+            if (vertices[i].CompareTo(val) == 0)
             {
                 index = i;
                 break;
@@ -186,7 +169,7 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
     //    }
     //}
 
-    public void DecreaseKey(Tkey oldKey, Tkey newKey,Value val)
+    public void DecreaseKey(Tkey oldKey, Tkey newKey,int val)
     {
         int i=GetIndex(oldKey, val);
         if (i > 0)
@@ -205,31 +188,31 @@ public class PriorityQueueMin<Tkey,Value> where Tkey:IComparable<Tkey> where Val
         if (keyCount >= keys.Length / 2)
         {
             Tkey[] newKeys = new Tkey[keys.Length*2];
-            Value[] newValues = new Value[values.Length*2];
+            int[] newValues = new int[vertices.Length*2];
 
             for(int i=0; i<= keyCount; i++)
             {
                 newKeys[i] = keys[i];
-                newValues[i] = values[i];
+                newValues[i] = vertices[i];
             }
 
             keys= newKeys;
-            values= newValues;
+            vertices= newValues;
 
         }
         else if (keyCount <= keys.Length / 4&&keys.Length>4)
         {
             Tkey[] newKeys = new Tkey[keys.Length/2];
-            Value[] newValues = new Value[values.Length/2];
+            int[] newValues = new int[vertices.Length/2];
 
             for (int i = 0; i <= keyCount; i++)
             {
                 newKeys[i] = keys[i];
-                newValues[i] = values[i];
+                newValues[i] = vertices[i];
             }
 
             keys = newKeys;
-            values = newValues;
+            vertices = newValues;
         }
     }
 }

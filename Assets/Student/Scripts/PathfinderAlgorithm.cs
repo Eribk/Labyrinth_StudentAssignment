@@ -8,27 +8,27 @@ public static class PathfindingAlgorithm
     // Find the lowest-cost path from start to goal using the map dimensions, wall costs and directed jumps exposed by IMapData.
     public static List<Vector2Int> FindShortestPath(Vector2Int start, Vector2Int goal, IMapData mapData)
     {
-        // Most of your solution should be implemented in this method.
 
         if(mapData == null)
         {
             Debug.Log("mapdata is null");
         }
 
-        Debug.Log("Get goal pos: " + goal);
 
+        //Creates a graph object. 
         MapGraph graph = new MapGraph(mapData);
+
+        //Translates start and end positions to nodes in the graph. 
         int startNode = graph.ConvertPosToNode(start);
         int endNode = graph.ConvertPosToNode(goal);
-        Debug.Log("Get goal ´node: " + endNode);
 
 
+        //Assign a graph and start node to a Dijkstras object. 
         Dijktras D = new Dijktras(graph,startNode);
 
-        List<Vector2Int> path = D.getShortestPathTo(endNode);
 
-        //Debug.LogWarning("FindShortestPath is not implemented.");
-        //return null;
+        //Gets shortest path from D. 
+        List<Vector2Int> path = D.getShortestPathTo(endNode);
 
         return path; 
     }
